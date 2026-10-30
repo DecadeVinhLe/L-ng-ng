@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<!-- Optional: paste a Google Maps JavaScript API key here. Empty = keyless embedded map. -->
+<meta name="google-maps-key" content="" />
+<title>Lắng</title>
+<link rel="icon" type="image/svg+xml" href="./logo.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+    <a class="skip" href="#app" data-i="skip"></a>
+    <header id="hd">
+      <div class="wrap top">
+        <a class="brand" href="#home"><img src="./logo.svg" alt="" width="30" height="30" />Lắng</a>
+        <button class="menu-btn" id="menu" type="button" aria-expanded="false" aria-controls="menu-panel">
+          <span data-i="m_menu"></span>
+          <svg class="chev" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="menu-panel" id="menu-panel" hidden>
+          <nav id="nav" aria-label="Main"></nav>
+          <div class="menu-tools">
+            <div class="tool-row">
+              <span class="menu-label" data-i="m_lang"></span>
+              <div class="seg" role="group" aria-label="Language">
+                <button type="button" data-lang="vi">Tiếng Việt</button>
+                <button type="button" data-lang="en">English</button>
+              </div>
+            </div>
+            <div class="tool-row">
+              <span class="menu-label" id="theme-label" data-i="m_dark"></span>
+              <button class="switch" id="theme" type="button" role="switch" aria-checked="false" aria-labelledby="theme-label">
+                <svg class="sw-sun" viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><circle cx="10" cy="10" r="3.6" fill="currentColor"/><path d="M10 1.5v2.4M10 16.1v2.4M1.5 10h2.4M16.1 10h2.4M4 4l1.7 1.7M14.3 14.3 16 16M16 4l-1.7 1.7M5.7 14.3 4 16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                <svg class="sw-moon" viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><path d="M16.5 12.2A7 7 0 0 1 7.8 3.5a7 7 0 1 0 8.7 8.7z" fill="currentColor"/></svg>
+                <span class="knob"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main id="app" tabindex="-1"></main>
+    <footer id="ft">
+      <div class="wrap">
+        <p data-i="ft_blurb"></p>
+        <p class="fbot">© <span id="yr"></span> Lắng · <span data-i="ft_note"></span></p>
+      </div>
+    </footer>
+    <div id="toast" role="status" aria-live="polite"></div>
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>
