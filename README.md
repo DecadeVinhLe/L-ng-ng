@@ -125,7 +125,7 @@ Because `vite.config.js` uses `base: './'`, the same build also works on any oth
 
 ## Team
 
-**Crusaders**, for **Swin-Biz Rockstar**.
+**Lặng**, for **Design-Thinking**.
 
 ## License
 
