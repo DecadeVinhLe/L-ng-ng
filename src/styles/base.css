@@ -1,0 +1,120 @@
+/* Signage look: bone paper, black ink, one sign-blue, price-tag yellow. */
+:root {
+  --ink: #14130f;
+  --bone: #f1eee6;
+  --sign: #17407a;
+  --tag: #f0c43a;
+  --leaf: #5c8f3d;
+  --leaf-deep: #3f6a28;
+  --caramel: #d98e2b;
+  --danger: #c2392b;
+
+  --font: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Barlow Condensed', 'Arial Narrow', Impact, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+
+  --r: 3px;
+  --r-sm: 2px;
+  --gap: 16px;
+  --wrap: 1120px;
+}
+
+:root,
+:root[data-theme='light'] {
+  color-scheme: light;
+  --bg: var(--bone);
+  --bg-2: #e7e2d6;
+  --card: #f8f6ef;
+  --card-edge: rgba(20, 19, 15, 0.22);
+  --line: var(--ink);
+  --text: #1a1915;
+  --mut: #5d5a50;
+  --accent: var(--sign);
+  --accent-ink: #ffffff;
+  --good: #2f6a1f;
+  --shadow: none;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #12110e;
+  --bg-2: #1b1a16;
+  --card: #1b1a16;
+  --card-edge: rgba(241, 238, 230, 0.2);
+  --line: var(--bone);
+  --text: var(--bone);
+  --mut: #a9a595;
+  --accent: var(--tag);
+  --accent-ink: var(--ink);
+  --good: #9ccf72;
+  --shadow: none;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  overscroll-behavior-y: none;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+}
+
+h1,
+h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 0.98;
+  letter-spacing: 0.01em;
+  margin: 0 0 0.4em;
+}
+h1 { font-size: clamp(2.8rem, 8vw, 5.2rem); }
+h2 { font-size: clamp(2rem, 5vw, 3.2rem); margin-top: 1.4em; }
+h3 { font: 700 1.05rem/1.3 var(--font); margin: 0 0 0.3em; }
+
+p { margin: 0 0 0.8em; }
+a { color: var(--accent); text-underline-offset: 3px; }
+img, svg { max-width: 100%; }
+
+table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--card-edge); white-space: nowrap; }
+th { color: var(--mut); font: 500 0.72rem var(--mono); text-transform: uppercase; letter-spacing: 0.08em; }
+td { font-variant-numeric: tabular-nums; }
+
+.wrap { width: min(var(--wrap), 100% - 32px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)); margin-inline: auto; }
+
+#hd {
+  padding-top: env(safe-area-inset-top, 0px);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.top { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px; padding-block: 6px; }
+.brand { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 700; font-size: 1.3rem; color: var(--text); text-decoration: none; }
+
+.menu-btn { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px 0 18px; border: 1px solid var(--card-edge); border-radius: 999px; background: var(--card); color: var(--text); font: 600 0.95rem var(--font); cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.chev { transition: transform 0.2s ease; }
+.menu-btn.open .chev { transform: rotate(180deg); }
+
+.menu-panel { position: absolute; right: 0; top: calc(100% + 8px); width: min(330px, 100vw - 32px); padding: 8px; background: var(--card); border: 1px solid var(--card-edge); border-radius: var(--r); box-shadow: var(--shadow); transform-origin: top right; animation: drop 0.16s ease-out; }
+.menu-panel[hidden] { display: none; }
+#nav { display: grid; gap: 2px; }
+#nav a { display: flex; align-items: center; min-height: 44px; padding: 0 14px; color: var(--text); text-decoration: none; border-radius: var(--r-sm); font-weight: 500; }
+#nav a.on { background: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.menu-tools { display: grid; gap: 10px; margin-top: 8px; padding: 12px 6px 6px; border-top: 1px solid var(--card-edge); }
+.tool-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 36px; }
+.menu-label { font-size: 0.92rem; font-weight: 500; white-space: nowrap; }

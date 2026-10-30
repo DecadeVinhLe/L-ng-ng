@@ -1,0 +1,15 @@
+/* Collect page: café list cards stack their text. */
+.shop h3 { margin: 0 0 2px; font-size: 1.05rem; }
+.shop p { margin: 0; }
+
+@media (max-width: 640px) {
+  /* 16px inputs stop iOS Safari from zooming the page on focus. */
+  input:not([type='checkbox']), select { font-size: 16px; }
+  .stats { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .stat { padding: 12px; }
+}
+
+/* Hub page: wide cards so the batch table fits. */
+.hubs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); gap: var(--gap); }
+.hub .row { margin-top: 14px; }
+.hub .mono-sm { margin: 4px 0 12px; }
