@@ -1,1 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Lắng logo"><rect width="64" height="64" fill="#14130f"/><circle cx="32" cy="29" r="17" fill="none" stroke="#f1eee6" stroke-width="5"/><rect x="20" y="49" width="24" height="6" fill="#f0c43a"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Lắng logo">
+  <rect width="64" height="64" fill="#14130f"/>
+  <!-- the loop: grounds go out and come back -->
+  <path d="M33.5 9.1A17 17 0 1 1 16.4 19.9" fill="none" stroke="#f1eee6" stroke-width="5"/>
+  <path d="M23.6 9.6 L13 15.4 L21.4 24.2 Z" fill="#f1eee6"/>
+  <!-- the bean at its centre -->
+  <g transform="rotate(-28 32 26)">
+    <ellipse cx="32" cy="26" rx="7.2" ry="10" fill="#f0c43a"/>
+    <path d="M32 16.4c-3.2 3.6 3.2 5.8 0 9.6s3.2 6 0 9.6" fill="none" stroke="#14130f" stroke-width="2.2" stroke-linecap="round"/>
+  </g>
+  <!-- what settles (lắng) at the bottom -->
+  <rect x="14" y="51" width="36" height="3.2" fill="#f0c43a"/>
+  <rect x="21" y="56.6" width="22" height="3.2" fill="#d98e2b"/>
+</svg>
