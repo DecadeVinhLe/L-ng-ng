@@ -1,5 +1,5 @@
 import { emptyState } from './state';
-const KEY = 'grounds-loop/state/1';
+const KEY = 'grounds-loop/state/2';
 function isLoopState(v) {
     if (typeof v !== 'object' || v === null)
         return false;

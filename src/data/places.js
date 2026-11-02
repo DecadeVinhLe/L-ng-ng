@@ -25,11 +25,24 @@ const HUBS = [
 const WORKSHOPS = [
     { id: 'w-bd', name: 'Xưởng 34 Bạch Đằng', district: 'Bạch Đằng', address: '34 Bạch Đằng', lat: 10.8142824, lng: 106.6694055, capacityKgPerWeek: 300, mapsId: 'ChIJbdWWxhgpdTEReiS47yGBUcU' },
 ];
-const placeById = (id) => [...BRANDS, ...HUBS, ...WORKSHOPS].find((p) => p.id === id);
+/**
+ * Communities: residential areas around the same three addresses. Households there book a date and
+ * we collect their grounds from the door. These areas are EXAMPLES drawn for the prototype (streets
+ * around each address), not official neighbourhood borders, and no household has signed up yet.
+ */
+const COMMUNITIES = [
+    { id: 'k-bd-34', name: 'Cộng đồng quanh 34 Bạch Đằng', district: 'Bạch Đằng', address: '34 Bạch Đằng', kind: 'community', zone: 'bd' },
+    { id: 'k-bd-a35', name: 'Cộng đồng quanh A35 Bạch Đằng', district: 'Bạch Đằng', address: 'A35 Bạch Đằng', kind: 'community', zone: 'bd' },
+    { id: 'k-lqd-485', name: 'Cộng đồng quanh 485 Lê Quang Định', district: 'Lê Quang Định', address: '485 Lê Quang Định', kind: 'community', zone: 'lqd' },
+];
+/** Booking rules for household pick-ups. */
+const PICKUP_RULES = { minLeadDays: 1, maxAheadDays: 28, maxHouseholdsPerDay: 12, minKg: 0.1, maxKg: 20 };
+const placeById = (id) => [...BRANDS, ...COMMUNITIES, ...HUBS, ...WORKSHOPS].find((p) => p.id === id);
 /** Official Google Maps link format: opens the place by name and id. */
 const mapsUrl = (p) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${p.name} ${p.address ?? ''}`.trim())}${p.mapsId ? `&query_place_id=${p.mapsId}` : ''}`;
 /** The hub each area drops its grounds at. */
 const HUB_FOR_ZONE = { bd: 'h-a35', lqd: 'h-lqd' };
 const brandsInZone = (zone) => BRANDS.filter((b) => b.zone === zone);
+const communityById = (id) => COMMUNITIES.find((c) => c.id === id);
 
-export { BRANDS, ZONES, HUBS, WORKSHOPS, placeById, mapsUrl, HUB_FOR_ZONE, brandsInZone };
+export { BRANDS, ZONES, HUBS, WORKSHOPS, COMMUNITIES, PICKUP_RULES, placeById, communityById, mapsUrl, HUB_FOR_ZONE, brandsInZone };

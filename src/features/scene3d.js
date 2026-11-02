@@ -97,8 +97,8 @@ const LOOKS = [
     { liq: [0.07, 0.04, 0.03], art: 0, tab: [0.25, 0.2, 0.22], bg: [0.3, 0.38, 0.55] },
     { liq: [0.25, 0.12, 0.06], art: 0, tab: [0.42, 0.27, 0.14], bg: [0.62, 0.42, 0.18] },
 ];
-/** Hero: espresso with a heart, on a cool concrete table so the warm cup stands out. */
-const HERO_LOOK = { liq: [0.3, 0.17, 0.09], art: 1, tab: [0.27, 0.26, 0.25], bg: [0.17, 0.2, 0.27] };
+/** Hero: espresso with a heart on a dark table under a dark rainy sky, so the warm cup stands out. */
+const HERO_LOOK = { liq: [0.3, 0.17, 0.09], art: 1, tab: [0.2, 0.2, 0.22], bg: [0.07, 0.09, 0.15] };
 const look = (i) => LOOKS[((i % LOOKS.length) + LOOKS.length) % LOOKS.length] ?? LOOKS[0];
 function makeRenderer(canvas) {
     const gl = canvas.getContext('webgl', { antialias: false, alpha: false, powerPreference: 'low-power' });

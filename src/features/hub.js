@@ -1,6 +1,6 @@
 import { clear, h, toast } from '../core/dom';
-import { defaultEnv, pickUp, waitingAtHub } from '../core/state';
-import { BRANDS, HUBS, placeById } from '../data/places';
+import { defaultEnv, hubConfig, pickUp, waitingAtHub } from '../core/state';
+import { BRANDS, COMMUNITIES, HUBS, placeById } from '../data/places';
 import { t } from '../i18n/index';
 import { empty, gradeBadge, pageHeader } from './ui';
 /** Grounds older than this at the hub are flagged: mold risk goes up after a day. */
@@ -13,7 +13,8 @@ function hubCard(store, hubId) {
     const waiting = waitingAtHub(store.get(), hubId);
     const usable = waiting.filter((b) => b.result.grade !== 'reject');
     const kg = Math.round(waiting.reduce((s, b) => s + b.kg, 0) * 10) / 10;
-    const pct = Math.min(100, Math.round((kg / hub.capacityKg) * 100));
+    const cfg = hubConfig(store.get(), hubId);
+    const pct = Math.min(100, Math.round((kg / cfg.capacityKg) * 100));
     const fill = h('div', { class: 'fill' });
     fill.style.width = `${pct}%`;
     const pickBtn = h('button', { class: 'btn', type: 'button' }, t('hb_pickup'));
@@ -34,13 +35,13 @@ function hubCard(store, hubId) {
             return h('tr', {}, h('td', {}, placeById(b.brandId)?.name ?? b.brandId), h('td', {}, `${b.kg} kg`), h('td', {}, gradeBadge(b.result.grade, b.result.score)), h('td', {}, `${t('hb_hours', { h: hrs })} · ${note}`));
         }))))
         : empty('hb_none');
-    return h('section', { class: 'card hub' }, h('h3', {}, hub.name), h('p', { class: 'mut' }, hub.address ?? hub.district), h('div', { class: 'meter', role: 'img', 'aria-label': t('hb_cap', { kg, cap: hub.capacityKg }) }, fill), h('p', { class: 'mono-sm' }, t('hb_cap', { kg, cap: hub.capacityKg })), table, h('div', { class: 'row' }, pickBtn));
+    return h('section', { class: 'card hub' }, h('h3', {}, hub.name, cfg.open ? null : h('span', { class: 'badge closed' }, t('hb_closed'))), h('p', { class: 'mut' }, hub.address ?? hub.district), h('div', { class: 'meter', role: 'img', 'aria-label': t('hb_cap', { kg, cap: cfg.capacityKg }) }, fill), h('p', { class: 'mono-sm' }, t('hb_cap', { kg, cap: cfg.capacityKg })), table, h('div', { class: 'row' }, pickBtn));
 }
 function renderHub(root, store) {
     clear(root);
     const state = store.get();
     // What each café has dropped so far: the café's side of the loop.
-    const rows = BRANDS.map((b) => {
+    const rows = [...BRANDS, ...COMMUNITIES].map((b) => {
         const mine = state.batches.filter((x) => x.brandId === b.id);
         return { name: b.name, drops: mine.length, kg: Math.round(mine.reduce((s, x) => s + x.kg, 0) * 10) / 10 };
     }).filter((r) => r.drops > 0);

@@ -13,3 +13,43 @@
 .hubs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); gap: var(--gap); }
 .hub .row { margin-top: 14px; }
 .hub .mono-sm { margin: 4px 0 12px; }
+
+/* demo page */
+.demo-steps { list-style: none; padding: 0; margin: 20px 0; display: grid; gap: 0; }
+.demo-step { display: grid; grid-template-columns: 44px 1fr; gap: 14px; padding: 16px 0; border-top: 1px solid var(--card-edge); opacity: 0.55; }
+.demo-step.done, .demo-step.now { opacity: 1; }
+.demo-step h3 { margin: 0 0 4px; }
+.demo-step p { margin: 0 0 6px; }
+.demo-n { width: 36px; height: 36px; display: grid; place-items: center; border: 2px solid var(--line); font: 700 1rem var(--font-display); }
+.demo-step.done .demo-n { background: var(--blue, #17407f); color: #fff; border-color: var(--blue, #17407f); }
+.demo-step.now .demo-n { border-color: var(--accent); }
+.demo-end { margin-top: 28px; border-top: 2px solid var(--line); padding-top: 8px; }
+.btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+
+/* admin page */
+.admin-lock { display: grid; gap: 14px; max-width: 420px; padding: 22px; }
+.admin-rows { display: grid; gap: 10px; margin: 18px 0 28px; }
+.admin-row { display: grid; grid-template-columns: minmax(150px, 1.4fr) 1fr 140px auto; gap: 14px; align-items: center; padding: 12px 16px; border: 1px solid var(--card-edge); background: var(--card, #faf7f0); }
+.admin-now { font-family: var(--font-mono, monospace); font-size: 0.85rem; opacity: 0.75; }
+.admin-row input { width: 100%; }
+@media (max-width: 640px) { .admin-row { grid-template-columns: 1fr 1fr; } .admin-row strong { grid-column: 1 / -1; } }
+.admin-hub { display: grid; gap: 12px; padding: 18px; }
+.admin-hub h3 { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 0; }
+.admin-cap { display: flex; gap: 12px; align-items: end; flex-wrap: wrap; }
+.admin-cap label { display: grid; gap: 4px; }
+.badge.open, .badge.closed { font: 700 0.7rem var(--font-mono, monospace); letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border: 1px solid currentColor; }
+.badge.open { color: #1f6b3a; }
+.badge.closed { color: #a33a2a; }
+
+/* Communities page: households book a collection date. */
+textarea { width: 100%; padding: 10px 12px; border-radius: var(--r-sm); border: 1px solid var(--card-edge); background: var(--bg); color: var(--text); font: 500 1rem var(--font); resize: vertical; }
+.book { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--gap); align-items: start; }
+@media (max-width: 800px) { .book { grid-template-columns: 1fr; } }
+.rounds, .tips { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+.row.tight { margin: 0; gap: 8px; flex-wrap: nowrap; }
+.row.tight input { min-width: 150px; }
+.hh { padding-block: clamp(40px, 6vw, 72px); }
+.badge.pk-scheduled, .badge.pk-collected, .badge.pk-cancelled { font: 700 0.7rem var(--font-mono, monospace); letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border: 1px solid currentColor; }
+.badge.pk-scheduled { color: var(--accent); }
+.badge.pk-collected { color: var(--good); }
+.badge.pk-cancelled { color: var(--mut); }

@@ -1,6 +1,9 @@
 import { $, clear, h } from '../core/dom';
 import { applyStatic, getLang, onLang, setLang, t } from '../i18n/index';
+import { renderAdmin } from './admin';
 import { renderCollect } from './collect';
+import { renderCommunity } from './community';
+import { renderDemo } from './demo';
 import { renderHome } from './home';
 import { renderHub } from './hub';
 import { renderImpact } from './impact';
@@ -10,12 +13,15 @@ const BRAND = 'Lắng';
 const PAGES = {
     home: renderHome,
     collect: renderCollect,
+    community: renderCommunity,
     hub: renderHub,
     workshop: renderWorkshop,
     market: renderMarket,
     impact: renderImpact,
+    demo: renderDemo,
+    admin: renderAdmin,
 };
-const NAV = ['home', 'collect', 'hub', 'workshop', 'market', 'impact'];
+const NAV = ['home', 'community', 'collect', 'hub', 'workshop', 'market', 'impact', 'demo'];
 const pageFromHash = () => {
     const id = window.location.hash.replace(/^#/, '');
     return id in PAGES ? id : 'home';

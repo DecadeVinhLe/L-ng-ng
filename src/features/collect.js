@@ -1,28 +1,60 @@
 import { clear, h, toast } from '../core/dom';
-import { addBatch, defaultEnv } from '../core/state';
+import { addBatch, defaultEnv, hubConfig, hubWaitingKg, scheduledPickups } from '../core/state';
 import { assessQuality, parseQualityInput, productsFor } from '../core/quality';
-import { BRANDS, HUBS, HUB_FOR_ZONE, placeById } from '../data/places';
+import { BRANDS, COMMUNITIES, HUBS, HUB_FOR_ZONE, placeById } from '../data/places';
 import { t } from '../i18n/index';
 import { empty, field, fmtDate, gradeBadge, numberInput, option, pageHeader } from './ui';
 function renderCollect(root, store) {
     clear(root);
-    const brand = h('select', { name: 'brandId' }, ...BRANDS.map((b) => option(b.id, b.name)));
-    const hub = h('select', { name: 'hubId' }, ...HUBS.map((x) => option(x.id, x.name)));
-    const syncHub = () => {
-        const zone = BRANDS.find((b) => b.id === brand.value)?.zone;
-        if (zone)
-            hub.value = HUB_FOR_ZONE[zone];
+    const brand = h('select', { name: 'brandId' }, h('optgroup', { label: t('c_group_cafe') }, ...BRANDS.map((b) => option(b.id, b.name))), h('optgroup', { label: t('c_group_com') }, ...COMMUNITIES.map((x) => option(x.id, x.name))));
+    // Booked household pick-ups: choosing one fills in the community and weight.
+    const booked = scheduledPickups(store.get());
+    const pickup = h('select', { name: 'pickupId' }, option('', t('c_pickup_none')), ...booked.map((p) => option(p.id, `${p.date} · ${placeById(p.communityId)?.name ?? p.communityId} · ${p.name} · ${p.kg} kg`)));
+    const hubState = (id) => {
+        const cfg = hubConfig(store.get(), id);
+        const left = cfg.capacityKg - hubWaitingKg(store.get(), id);
+        return { open: cfg.open, left };
     };
-    brand.addEventListener('change', syncHub);
-    syncHub();
+    const hubLabel = (x) => {
+        const st = hubState(x.id);
+        return st.open ? x.name : `${x.name} · ${t('hb_closed')}`;
+    };
+    const hub = h('select', { name: 'hubId' }, ...HUBS.map((x) => {
+        const o = option(x.id, hubLabel(x));
+        o.disabled = !hubState(x.id).open;
+        return o;
+    }));
+    const syncHub = () => {
+        const zone = placeById(brand.value)?.zone;
+        const want = zone ? HUB_FOR_ZONE[zone] : undefined;
+        // Use the area's own hub when it is open; otherwise the first hub that is.
+        hub.value = want && hubState(want).open ? want : (HUBS.find((x) => hubState(x.id).open)?.id ?? want ?? hub.value);
+    };
     const kg = numberInput('kg', 20, { min: 0.1, max: 1000 });
+    brand.addEventListener('change', () => {
+        // Changing the source drops a pick-up that belongs to another community.
+        const chosen = booked.find((p) => p.id === pickup.value);
+        if (chosen && chosen.communityId !== brand.value)
+            pickup.value = '';
+        syncHub();
+    });
+    pickup.addEventListener('change', () => {
+        const chosen = booked.find((p) => p.id === pickup.value);
+        if (!chosen)
+            return;
+        brand.value = chosen.communityId;
+        kg.value = String(chosen.kg);
+        syncHub();
+        updatePreview();
+    });
+    syncHub();
     const moisture = numberInput('moisturePct', 60, { min: 0, max: 100 });
     const contaminant = numberInput('contaminantPct', 3, { min: 0, max: 100 });
     const age = numberInput('ageHours', 6, { min: 0 });
     const ph = numberInput('ph', 5.2, { min: 0, max: 14, step: 0.1 });
     const mold = h('input', { type: 'checkbox', name: 'moldVisible' });
     const preview = h('div', { class: 'preview', 'aria-live': 'polite' });
-    const form = h('form', { class: 'card form', novalidate: true }, h('div', { class: 'grid' }, field('c_brand', brand), field('c_hub', hub), field('c_kg', kg, 'c_kg_h'), field('c_moist', moisture, 'c_moist_h'), field('c_contam', contaminant, 'c_contam_h'), field('c_age', age), field('c_ph', ph)), h('label', { class: 'chk' }, mold, h('span', {}, t('c_mold'))), preview, h('div', { class: 'row' }, h('button', { class: 'btn', type: 'submit' }, t('c_log'))));
+    const form = h('form', { class: 'card form', novalidate: true }, h('div', { class: 'grid' }, field('c_brand', brand), field('c_hub', hub), booked.length ? field('c_pickup', pickup, 'c_pickup_h') : null, field('c_kg', kg, 'c_kg_h'), field('c_moist', moisture, 'c_moist_h'), field('c_contam', contaminant, 'c_contam_h'), field('c_age', age), field('c_ph', ph)), h('label', { class: 'chk' }, mold, h('span', {}, t('c_mold'))), preview, h('div', { class: 'row' }, h('button', { class: 'btn', type: 'submit' }, t('c_log'))));
     const readQuality = () => parseQualityInput(Object.fromEntries(new FormData(form).entries()));
     function updatePreview() {
         clear(preview);
@@ -43,7 +75,7 @@ function renderCollect(root, store) {
             toast(t(parsed.error));
             return;
         }
-        const res = addBatch(store.get(), { brandId: brand.value, hubId: hub.value, kg: Number(kg.value), quality: parsed.value }, defaultEnv);
+        const res = addBatch(store.get(), { brandId: brand.value, hubId: hub.value, kg: Number(kg.value), quality: parsed.value, pickupId: pickup.value || undefined }, defaultEnv);
         if (!res.ok) {
             toast(t(res.error));
             return;

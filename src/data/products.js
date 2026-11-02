@@ -6,6 +6,14 @@ const PRODUCTS = [
     { id: 'scrub-soap', gramsPerUnit: 20, minGrade: 'B', priceVnd: 55_000, costVnd: 18_000 },
     { id: 'candle', gramsPerUnit: 40, minGrade: 'A', priceVnd: 89_000, costVnd: 32_000 },
 ];
+/** SAMPLE opening stock per product, on the shelf before any batch is made here. */
+const OPENING_STOCK = {
+    'fridge-sachet': 34,
+    'shoe-deodorizer': 23,
+    'car-sachet': 56,
+    'scrub-soap': 24,
+    candle: 32,
+};
 const productById = (id) => {
     const p = PRODUCTS.find((x) => x.id === id);
     if (!p)
@@ -13,4 +21,4 @@ const productById = (id) => {
     return p;
 };
 
-export { PRODUCTS, productById };
+export { PRODUCTS, OPENING_STOCK, productById };
