@@ -2,7 +2,6 @@
 
 ![A pour-over coffee being brewed](docs/images/pour-over.png)
 
-*Image: illustrative still, used for this README only.*
 
 **Lắng** is a small web app that closes a loop for coffee waste. Local cafés drop their spent grounds at a hub, we check the quality, a workshop turns them into handmade odor-absorbing products, and the products are sold back to the same cafés.
 
