@@ -13,13 +13,16 @@ The site runs in English and Vietnamese. It has no backend. Everything you enter
 ## Features
 
 - Five-step loop in one place: **drop, check, pick up, craft, sell**
+- **Communities** page: households in the three areas book a **collection date** and we collect their grounds from the door, in addition to the café drops
 - Quality check that grades every batch of grounds (A, B, C or reject) with clear reasons
 - Café map around 34 Bạch Đằng, A35 Bạch Đằng and 485 Lê Quang Định (Tân Bình, Ho Chi Minh City)
 - Live "impact" page: kilograms diverted, products made, revenue and estimated CO₂e saved
+- **Demo** page: one batch walks through the whole loop with sample numbers, on its own copy of the data
+- **Admin** page (passcode): edit how many of each product are in stock, and control the collecting hubs
 - Vietnamese and English text, dark and light mode, one simple menu
 - Plain HTML, CSS and JavaScript modules built with Vite. No framework.
 
-> **Prototype notice:** café names, addresses and coordinates come from Google Maps. Grounds volumes, prices and costs are **sample numbers**, and the cafés are **not partners yet**.
+> **Prototype notice:** café names, addresses and coordinates come from Google Maps. Grounds volumes, prices and costs are **sample numbers**, and the cafés are **not partners yet**. The three communities are **example areas** (the streets around 34 and A35 Bạch Đằng and 485 Lê Quang Định), and no household has signed up.
 
 ## How the core tools work
 
@@ -34,6 +37,23 @@ All data is one state object: `{ batches, productions, sales }`. Each step is a 
 | Pick up | Hub | `pickUp` | The workshop collects every usable batch waiting at a hub. Rejected batches stay behind. |
 | Craft | Workshop | `produce` | Turns a batch into units of one product, based on dry weight. |
 | Sell | Market | `sell` | Sells units back to a café and records revenue. |
+
+### 1b. Household pick-ups (`src/core/state.js`, `src/features/community.js`)
+
+Cafés are not the only source of grounds. `COMMUNITIES` in `src/data/places.js` lists three residential areas, one per address. A household opens **Communities** (`#community`), picks its community and a date, and gives a name, a phone or Zalo number, a house or lane and about how many kg.
+
+| Function | What it does |
+| --- | --- |
+| `schedulePickup` | Books a date. Checks the name, phone (8 to 13 digits), address, weight (0.1 to 20 kg) and that the date is from tomorrow to 4 weeks ahead. One open booking per phone number per community, and at most 12 households per community per day. |
+| `reschedulePickup` | Moves a booking to another valid date, with the same capacity check. |
+| `cancelPickup` | Cancels a booking that is still waiting. |
+| `addBatch` | Now accepts a community as the source, and an optional `pickupId`. Saving the batch marks that booking **collected** in the same step. |
+
+The rules live in `PICKUP_RULES` in `src/data/places.js`. Dates are plain `YYYY-MM-DD` strings in the browser's time zone.
+
+The flow for the collector: open **Admin → Household pick-ups** to see who is booked on which day (with phone, address and note), collect on that day, then on **Collect** choose the booking under "From a booked household pick-up". The community and weight are filled in, you enter the quality readings, and the batch goes to that area's hub like any other. **Impact** shows the kilograms that came from households.
+
+> **Bookings stay in the browser.** The site has no backend, so a booking made on a household's phone is saved only on that phone. A collector cannot see it yet. To make this real, send bookings to a server or a shared sheet (for example a form that writes to Google Sheets, or a small database) and read them in the Admin page.
 
 ### 2. Quality check (`src/core/quality.js`)
 
@@ -54,7 +74,7 @@ A tiny observable store saves the state to `localStorage` and tells pages when t
 
 ### 4. Pages and routing (`src/features/shell.js`)
 
-The page is chosen by the URL hash (`#home`, `#collect`, `#hub`, `#workshop`, `#market`, `#impact`). The shell draws the header menu, the language switch and the dark mode switch, then calls the matching `render...` function in `src/features/`.
+The page is chosen by the URL hash (`#home`, `#community`, `#collect`, `#hub`, `#workshop`, `#market`, `#impact`, `#demo`, `#admin`). The shell draws the header menu, the language switch and the dark mode switch, then calls the matching `render...` function in `src/features/`.
 
 ### 5. DOM helper (`src/core/dom.js`)
 
@@ -74,6 +94,21 @@ With no key, the home page shows Google's keyless embedded map. To use the full 
 - `src/features/three-fig.js`: loads Three.js r128 from cdnjs for the 3D figure.
 - `src/data/images.js`: anime-style SVG pictures for the hero and the five products, generated in code.
 
+
+### 6. Admin (`src/features/admin.js`)
+
+Open it from the footer link or `#admin`. It asks for a passcode (default `lang2026`; change the SHA-256 hash in `src/data/admin.js`). Behind the lock:
+
+- **Product numbers:** set the stock for each product (`setStock`). Later batches and sales continue from the new number.
+- **Collecting hubs:** for each hub, open or close it, set its capacity in kg (`setHub`), and clear rejected batches stuck there (`clearRejected`). A closed hub takes no new drops and is greyed out on the Collect page; `addBatch` refuses any drop that would go over a hub's capacity.
+- **Household pick-ups:** every booked household by date, with contact, address and note, plus how many kilograms and collection days are due in the next 7 days. A booking can be cancelled here.
+- **Café tracker** (`cafeTracker` in `src/core/loop.js`): for every café, grounds dropped, units bought back and revenue, plus the next likely collection date (last drop plus the café's own average gap between drops, or a week if there is only one drop) and the expected kg. A CSV download is included for planning.
+- Every change is written to a log (`adjustments`) and shown under "Recent changes".
+
+> **Not real security.** The site has no backend, so the passcode check runs in the browser and every change is saved only in that browser. Anyone can read the hash or the browser storage. Shared admin control across devices needs a server with a login.
+
+`npm run build` makes the Vite site. `python3 scripts/bundle_single.py out.html` makes one self-contained HTML file with no build tools.
+
 ## Project structure
 
 ```
@@ -84,7 +119,7 @@ With no key, the home page shows Google's keyless embedded map. To use the full 
 ├── src/
 │   ├── core/                      state, quality, store, loop, dom
 │   ├── data/                      places, products, images
-│   ├── features/                  one file per page, plus map and 3D
+│   ├── features/                  one file per page (community.js for household bookings), plus map and 3D
 │   ├── i18n/                      translations and t()
 │   ├── styles/                    base, header, forms, home
 │   └── main.js                    entry point
